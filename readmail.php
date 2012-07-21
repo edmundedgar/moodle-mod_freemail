@@ -1,5 +1,5 @@
 <?php
-   /**
+/**
 * Freemail v1.1 with SL patch
 *
 * @package freemail
@@ -7,158 +7,111 @@
 * @license http://www.gnu.org/licenses/gpl-3.0.html GNU GPL v3
 * @author Serafim Panov
 * @contributor: Paul G. Preibisch - aka Fire centaur in Second Life
+* @contributor: Edmund Edgar
 *
 */
-$_PATHS["base"]      = dirname(__FILE__) . "/";
-$_PATHS["pear"]      = $_PATHS["base"] . "PEAR/";
 
-ini_set("include_path", "$_PATHS[pear]");
+// 
+require_once 'freemail_imap_message_handler.php'; 
 
-require_once 'Mail/IMAPv2.php';
-require_once "sllib.php";   
-$connection = $CFG->freemail_pop3_or_imap.'://'.$CFG->freemail_mail_user_name.':'.$CFG->freemail_mail_user_pass.'@'.$CFG->freemail_mail_box_settings;
+// The following are base classes, but with static methods to load inherited classes.
 
+// We'll need an email_processor to parse our email - for example if it looks like a Second Life snapshot, we'll want one of those.
+require_once 'freemail_email_processor.php'; 
 
+// It will then need to find something to do with the email, like import it into the blog.
+require_once 'freemail_moodle_importer.php';
 
+$email_processors = freemail_email_processor::available_email_processors();
+if (!count($email_processors)) {
+    print "No email processoors available, aborting.";
+    exit;
+}
 
+$handler = new freemail_imap_message_handler();
+if (!$mailbox = $handler->connect($CFG->freemail_mail_box_settings, $CFG->freemail_mail_user_name, $CFG->freemail_mail_user_pass)) {
+    print "connection failed";
+    exit;
+}
 
+if (!$msgcount = $handler->count()) {
+    print "no messages";
+    $handler->close();
+    exit;
+}
 
-//use below for gmail and gmail accounts
-$msg = new Mail_IMAPv2($connection);
-$attachments = array();
+if ($msgcount > 0)  {  
 
-$msgcount = $msg->messageCount(); 
-
-$commands = array("HELP");
-
-if ($msgcount > 0)  
-{  
     if ($msgcount > $CFG->freemail_mail_maxcheck) {
         $msgcount = $CFG->freemail_mail_maxcheck;
     }
 
-    for ($mid = 1; $mid <= $msgcount; $mid++)
-    {
-    
-        $msg->getHeaders($mid);
-        $msg->getParts($mid);
-        $mailbody = $msg->getRawMessage($mid);  //SECOND LIFE PATCH--In line
-        //extract and build the slurl - FIRE
-        $searchText=$mailbody;    
-        $simname= getSlInfo("sim_name",$searchText);
-        $username = getSlInfo("username",$searchText);
-        $x= getSlCoords("local_x",$searchText);
-        $y= getSlCoords("local_y",$searchText);
-        $z= getSlCoords("local_z",$searchText);
-        //build slurl - FIRE
-        $slurl='http://slurl.com/secondlife/'.urlencode($simname).'/'.$x.'/'.$y.'/'.$z;
+    for ($mid = 1; $mid <= $msgcount; $mid++) {
 
-        if ($msg->header[$mid]['Size'] > $CFG->freemail_mail_maxsize) {
+        if (!$handler->load($mid)) {
+            continue;
+        }
+
+        $htmlmsg = $handler->get_html_message();;
+        $plainmsg = $handler->get_plain_message();; 
+        $charset = $handler->get_charset();
+        $attachments = $handler->get_attachments();
+        $subject = $handler->get_subject();
+
+        if ($handler->get_size_in_bytes() > $CFG->freemail_mail_maxsize) {
             $usermailcontent[] = array('email' => $msg->header[$mid]['from'][0], 'subject' => $msg->header[$mid]['subject'], 'error' => 'bigmailsize');
+            continue;
         }
-        else
-        {
 
-            $messagebody = $msg->getBody($mid);                                          
-            $messagebody['message'] = str_replace("Want to try out Second Life for yourself?  Sign up at", "", $messagebody['message']); //SECOND LIFE PATCH--In line
-            $messagebody['message'] = str_replace("--", "", $messagebody['message']); //SECOND LIFE PATCH--In line
-            //add delimiter so we can delete the unwanted text - FIRE                        
-            $messagebody['message'] .="endhere"; 
-            //find start of unwanted text - FIRE
-            $cutoffstart=strpos($messagebody['message'],"http://secondlife.com"); 
-            $cutoffend=strpos($messagebody['message'],"endhere",$cutoffstart+4);
-            $cutlength=$cutoffend-$cutoffstart+7;           
-            $toDelete= substr($messagebody['message'],$cutoffstart,$cutlength);
-            //now remove unwanted text - FIRE            
-            $messagebody['message'] = str_replace($toDelete," ",$messagebody['message']);           
-            
-            //SECOND LIFE PATCH--BEGIN
-            $c = -1;
-            
-            $secondimage = "";
-            
-            $mailbody = explode("\r", $mailbody);
-            foreach ($mailbody as $mailbody_) {
-                if (strstr($mailbody_, 'Content-Disposition: inline; filename="secondlife-postcard.jpg"')) {
-                    $c = 0;
-                }
-                if ($c >= 0) {
-                    if ($c > 3) {
-                        if (strlen($mailbody_) == 61) {
-                            $secondimage .= $mailbody_;
-                        }
-                        else
-                        {
-                            if (strlen($mailbody_) >0) {
-                                $secondimage .= $mailbody_;
-                            }
-                            $c = -1;
-                        }
-                        
-                    }
-                    else
-                    {
-                        $c++;
-                    }
-                }
+        foreach($email_processors as $processor) {
+
+            $processor->set_subject($subject);
+            $processor->set_plain_body($plainmsg);
+            $processor->set_html_body($htmlmsg);
+            $processor->set_charset($charset);
+
+            // This isn't used by the sloodle processor, which this was originally developed for.
+            // It's added here for other processors that might want to use it.
+            // But it hasn't been tested, and may be broken.
+            foreach($attachments as $attachment_filename => $attachment_body) {
+                $processor->add_attachment($attachment_filename, $attachment_body);
             }
-            //SECOND LIFE PATCH---END
-            
-            list($subcomm, $messcomm) = freemail_getcommands($msg->header[$mid]['subject'], $messagebody['message'], $commands);
 
-            $imagebody = "";
-            $imagename = "";
-
-            // Now the attachments
-            if (isset($msg->msg[$mid]['at']['pid']) && count($msg->msg[$mid]['at']['pid']) > 0)
-            {
-                foreach ($msg->msg[$mid]['at']['pid'] as $i => $aid)
-                {
-                    $fname = (isset($msg->msg[$mid]['at']['fname'][$i]))? $msg->msg[$mid]['at']['fname'][$i] : NULL;
-                    
-                    $body = $msg->getBody($mid, $aid);  
-                    
-                    if (empty($imagename)) {
-                        $imagename = $fname;
-                    }
-                    if (empty($imagebody)) {
-                        $imagebody = $body['message'];
-                    }
-                    
-                    $attachments[] = array("size"=>$msg->msg[$mid]['at']['fsize'][$i], "type"=>$msg->msg[$mid]['at']['ftype'][$i], "filename"=>$fname, "filecontant"=>base64_encode($body['message']));
-                    
-                }
+            // Couldn't make sense of it, skip
+            if (!$processor->prepare()) {
+                continue;
             }
-            
-            
-            //SECOND LIFE PATCH--BEGIN
-            if (empty($imagename)) {
-                $imagename = "secondlife-postcard.jpg";
-                $imagebody = $secondimage;
-            }
-            //SECOND LIFE PATCH--END
 
-            print "Skipping delete";
-            //$msg->delete($mid);
-            $usermailcontent[] = array('size'=>$msg->header[$mid]['Size'], 'email'=>$msg->header[$mid]['from'][0], 'subject'=>$msg->header[$mid]['subject'], 'messages'=>$messagebody['message'], 'subcommands'=>$subcomm, 'mescommands'=>$messcomm, 'image'=>$imagebody, 'image_name'=>$imagename, 'body'=>$messagebody['message'], 'attachments'=>$attachments,'slurl'=>$slurl);
+            // Couldn't find anyone to process it, skip.
+            if (!$processor->load_importer()) {
+                continue;
+            }
+
+            // Processor can't handle this kind of email.
+            if (!$processor->is_email_processable()) {
+                continue;
+            }
+
+            $ok = $processor->import();
+            break;
+
         }
+
+        // skipping subcommand stuff
+        // list($subcomm, $messcomm) = freemail_getcommands($msg->header[$mid]['subject'], $messagebody['message'], $commands);
+
+
+        print "Skipping delete";
+        $handler->delete();
+        //imap_delete($mailbox, $mid);
+
+        print "skipping user mail content";
+
     }
+
 }
 
-$msg->expunge();
-$msg->close(); 
+$handler->expunge();
+$handler->close();
 
-function freemail_getcommands($subject, $messages, $commands) {
-    $submail= Array();
-    $mesmail= Array();
-    foreach ($commands as $name => $value) {
-        if (strpos(strtoupper($subject), $value) === false) { } else { $submail[] = $value; }
-        if (strpos(strtoupper($messages), $value) === false) { } else { $mesmail[] = $value; }
-    }
-    
-    return array($submail, $mesmail);
-}
-
-
-
-?>
+exit;
