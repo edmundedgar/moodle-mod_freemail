@@ -1,0 +1,303 @@
+<?php global $CFG;?>
+<table cellpadding="9" cellspacing="0" border="1" > 
+<tr><td><b><a href="http://slisweb.sjsu.edu/sl/index.php/Sloodle_Postcard_Blogger_aka_Freemail">About</a></b></td><td><b>
+<a href="<?php echo $CFG->wwwroot."/mod/freemail/check_mail.php"; ?>">
+<?php print(get_string("freemail:testaccount", "freemail")); ?></a></b>
+</td><td><b><a href="http://www.sloodle.org/moodle/mod/forum/view.php?f=15"><?php print(get_string("freemail:forums", "freemail")); ?></a></b></td></tr>
+</table>
+
+
+<form method="post" action="module.php" name="form1">
+<input type="hidden" name="sesskey" value="<?php echo $USER->sesskey; ?>" />
+
+<table cellpadding="9" cellspacing="0" >
+
+
+
+<tr valign=top>
+    <td align=right><?php print (get_string('freemail:mailaccount','freemail'));?></td>
+    <td>
+<input type="text" name="freemail_mail_user_name" size="40" value="<?php p($CFG->freemail_mail_user_name); ?>" /> 
+    </td>
+    <td>
+    </td>
+</tr>
+
+<tr valign=top>
+    <td align=right><?php print (get_string('freemail:mailacountpassword','freemail'));?></td>
+    <td>
+<input type="text" name="freemail_mail_user_pass" size="40" value="<?php p($CFG->freemail_mail_user_pass); ?>" /> 
+    </td>
+    <td>
+    </td>
+</tr>
+
+<tr valign=top>
+    <td align=right></td>
+    <td style="font-size:10px;">
+        <i><?php print (get_string('freemail:gmailuse','freemail'));?><br>imap.gmail.com:993/INBOX#ssl)</i>
+    </td>
+    <td>
+    </td>
+</tr>
+<tr valign=top>
+    <td align=right><?php print (get_string('freemail:mailboxsettings','freemail'));?></td>
+    <td>
+<input type="text" name="freemail_mail_box_settinds" size="40" value="<?php p($CFG->freemail_mail_box_settinds); ?>" /> 
+    </td>
+    <td>
+    </td>
+</tr>      
+<tr valign=top>
+    <td align=right><?php print (get_string('freemail:mailaccounttype','freemail'));?></td>
+    <td>
+<select name="pop3_or_imap">
+  <option value ="pop3" <?php if ($CFG->pop3_or_imap == "pop3") { p("selected=\"selected\""); }?>>POP3</option>
+  <option value ="imap" <?php if ($CFG->pop3_or_imap == "imap") { p("selected=\"selected\""); }?>>IMAP</option>
+</select>
+    </td>
+    <td>
+    </td>
+</tr>
+
+
+
+<tr valign=top>
+    <td align=right><?php print (get_string('freemail:adminmail','freemail'));?></td>
+    <td>
+<input type="text" name="freemail_mail_admin_email" size="40" value="<?php p($CFG->freemail_mail_admin_email); ?>" /> 
+    </td>
+    <td>
+    </td>
+</tr>
+
+<tr valign=top>
+    <td align=right><?php print (get_string('freemail:emailtosend','freemail'));?></td>
+    <td>
+<input type="text" name="freemail_mail_emailadress" size="40" value="<?php p($CFG->freemail_mail_emailadress); ?>" /> 
+    </td>
+    <td>
+    </td>
+</tr>
+   <tr valign=top>
+    <td align=right><?php print(get_string('freemail:maxcheck','freemail'));?></td>
+    <td>
+<input type="text" name="freemail_mail_maxcheck" size="40" value="<?php p($CFG->freemail_mail_maxcheck); ?>" />
+    </td>
+    <td>
+    </td>
+</tr>
+
+<tr valign=top>
+    <td align=right><?php print(get_string('freemail:delete','freemail'));?></td>
+    <td>
+<input type="text" name="freemail_mail_maxsize" size="40" value="<?php p($CFG->freemail_mail_maxsize); ?>" />
+    </td>
+    <td>
+    </td>
+</tr>
+
+<tr valign=top>
+    <td align=right><?php print(get_string('freemail:usepass','freemail'));?></td>
+    <td>
+<select name="freemail_usepassword">    
+<?php if (!$CFG->freemail_usepassword) $CFG->freemail_usepassword=1;?>
+  <option value ="0" <?php if ($CFG->freemail_usepassword == 0) { print("selected=\"selected\""); } ?>>No</option>
+  <option value ="1" <?php if ($CFG->freemail_usepassword == 1) { print("selected=\"selected\""); } ?>>Yes</option>
+</select>
+    </td>
+    <td>
+    </td>
+</tr>
+
+<tr valign=top>
+    <td align=right><?php print(get_string('freemail:decodes','freemail'));?></td>
+    <td>
+<select name="freemail_subjectline">
+  <option value ="0" <?php if ($CFG->freemail_subjectline == 0) { print( "selected=\"selected\""); } ?>>No</option>
+  <option value ="1" <?php if ($CFG->freemail_subjectline == 1) { print( "selected=\"selected\""); } ?>>Yes</option>
+</select>
+    </td>
+    <td>
+    </td>
+</tr>
+
+<tr valign=top>
+    <td align=right><?php print(get_string('freemail:decodes2','freemail'));?></td>
+    <td>
+<select name="freemail_2bytes">
+  <option value ="0" <?php if ($CFG->freemail_2bytes == 0) { echo "selected=\"selected\""; } ?>>No</option>
+  <option value ="1" <?php if ($CFG->freemail_2bytes == 1) { echo "selected=\"selected\""; } ?>>Yes</option>
+</select>
+    </td>
+    <td>
+    </td>
+</tr>
+
+<tr valign=top>
+    <td align=right><?php print(get_string('freemail:mailheader','freemail'));?></td>
+    <td>
+    <?php print_textarea(false, 5, 30, 300, 400, 'freemail_mess_header', $CFG->freemail_mess_header); ?>
+    </td>
+    <td>
+
+    </td>
+</tr>
+
+<tr valign=top>
+    <td align=right><?php print(get_string('freemail:footer','freemail'));?></td>
+    <td>
+    <?php print_textarea(false, 5, 30, 300, 400, 'freemail_mess_footer', $CFG->freemail_mess_footer); ?>
+    </td>
+    <td>
+
+    </td>
+</tr>
+
+<tr valign=top>
+    <td align=right><?php print(get_string('freemail:mailsubject','freemail'));?></td>
+    <td>
+    <?php print_textarea(false, 5, 30, 300, 400, 'freemail_mess_subject', $CFG->freemail_mess_subject); ?>
+    </td>
+    <td>
+
+    </td>
+</tr>
+
+<tr valign=top>
+    <td align=right><?php print(get_string('freemail:upload','freemail'));?></td>
+    <td>
+    <?php print_textarea(false, 5, 30, 300, 400, 'freemail_mess_001', $CFG->freemail_mess_001); ?>
+    </td>
+    <td>
+
+    </td>
+</tr>
+
+<tr valign=top>
+    <td align=right><?php print(get_string('freemail:incorrect','freemail'));?></td>
+    <td>
+    <?php print_textarea(false, 5, 30, 300, 400, 'freemail_mess_002', $CFG->freemail_mess_002); ?>
+    </td>
+    <td>
+
+    </td>
+</tr>
+
+<tr valign=top>
+    <td align=right><?php print(get_string('freemail:incorrectimage','freemail'));?></td>
+    <td>
+    <?php print_textarea(false, 5, 30, 300, 400, 'freemail_mess_003', $CFG->freemail_mess_003); ?>
+    </td>
+    <td>
+
+    </td>
+</tr>
+
+<tr valign=top>
+    <td align=right><?php print(get_string('freemail:nocommands','freemail'));?></td>
+    <td>
+    <?php print_textarea(false, 5, 30, 300, 400, 'freemail_mess_004', $CFG->freemail_mess_004); ?>
+    </td>
+    <td>
+
+    </td>
+</tr>
+
+<tr valign=top>
+    <td align=right><?php print(get_string('freemail:noimage','freemail'));?></td>
+    <td>
+    <?php print_textarea(false, 5, 30, 300, 400, 'freemail_mess_005', $CFG->freemail_mess_005); ?>
+    </td>
+    <td>
+
+    </td>
+</tr>
+
+<tr valign=top>
+    <td align=right><?php print(get_string('freemail:wrongsize','freemail'));?></td>
+    <td>
+    <?php print_textarea(false, 5, 30, 300, 400, 'freemail_mess_006', $CFG->freemail_mess_006); ?>
+    </td>
+    <td>
+
+    </td>
+</tr>
+
+<tr valign=top>
+    <td align=right><?php print(get_string('freemail:helpcommands','freemail'));?></td>
+    <td>
+    <?php print_textarea(false, 5, 30, 300, 400, 'freemail_mess_007', $CFG->freemail_mess_007); ?>
+    </td>
+    <td>
+
+    </td>
+</tr>
+
+<tr valign=top>
+    <td align=right><?php print(get_string('freemail:blogentry','freemail'));?></td>
+    <td>
+    <?php print_textarea(false, 5, 30, 300, 400, 'freemail_mess_008', $CFG->freemail_mess_008); ?>
+    </td>
+    <td>
+
+    </td>
+</tr>
+
+<tr valign=top>
+    <td align=right><?php print(get_string('freemail:wrongblogpass','freemail'));?></td>
+    <td>
+    <?php print_textarea(false, 5, 30, 300, 400, 'freemail_mess_009', $CFG->freemail_mess_009); ?>
+    </td>
+    <td>
+
+    </td>
+</tr>
+
+<tr valign=top>
+    <td align=right>No file (Gallery)</td>
+    <td>
+    <?php print_textarea(false, 5, 30, 300, 400, 'freemail_mess_010', $CFG->freemail_mess_010); ?>
+    </td>
+    <td>
+
+    </td>
+</tr>
+
+<tr valign=top>
+    <td align=right>Item was added</td>
+    <td>
+    <?php print_textarea(false, 5, 30, 300, 400, 'freemail_mess_011', $CFG->freemail_mess_011); ?>
+    </td>
+    <td>
+
+    </td>
+</tr>
+
+<tr valign=top>
+    <td align=right>Album name field error</td>
+    <td>
+    <?php print_textarea(false, 5, 30, 300, 400, 'freemail_mess_012', $CFG->freemail_mess_012); ?>
+    </td>
+    <td>
+
+    </td>
+</tr>
+
+<tr valign=top>
+    <td align=right>Incorrect album short name</td>
+    <td>
+    <?php print_textarea(false, 5, 30, 300, 400, 'freemail_mess_013', $CFG->freemail_mess_013); ?>
+    </td>
+    <td>
+
+    </td>
+</tr>
+
+<tr>
+    <td colspan="3" align="center">
+    <input type="submit" value="<?php print_string("savechanges") ?>"></td>
+</tr>
+</table>
+
+</form>
