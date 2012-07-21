@@ -51,7 +51,7 @@ $string['freemail:confignotice'] = '<b>Welcome to the Freemail module for Second
 $string['freemail:confignotice'] = '<br><br><b>About:</b><br>Using Freemod, your moodle users can send blog posts to Moodle directly from Second Life!';
 $string['freemail:confignotice'] .= "<br><b>Wiki:<b><a href='http://slisweb.sjsu.edu/sl/index.php/Sloodle_Postcard_Blogger_(Freemail)'>(Freemail) Postcard Blogger</a>";
 $string['freemail:mailaccount']='Mail Account Name';
-$string['freemail:mailacountpassword']='Mail account password';
+$string['freemail:mailaccountpassword']='Mail account password';
 $string['freemail:mailboxsettings']='Mailbox settings';
 $string['freemail:mailaccounttype']='Mail account Type';
 $string['freemail:emailtosend']='Email address to upload content with FreeMail';

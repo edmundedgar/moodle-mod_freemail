@@ -21,6 +21,7 @@ require_once $CFG->dirroot ."/lib/datalib.php";
   function freemail_profile($image_name, $email, $subject) 
   {
     global $CFG;
+    global $DB;
      
     $dir = "users";
     $subj = explode (":", $subject);
@@ -32,11 +33,11 @@ require_once $CFG->dirroot ."/lib/datalib.php";
     
     if ($valid == "true") {
         if ($CFG->freemail_usepassword == 1) {
-            $user = get_record_sql ("SELECT * FROM ".$CFG->prefix."user WHERE username = '".$userid."' and password = '".md5($userpass)."'");
+            $user = $DB->get_record_sql ("SELECT * FROM {user} WHERE username = '?' and password = '?'", array($userid, md5($userpass))); 
         }
         else
         {
-            $user = get_record_sql ("SELECT * FROM ".$CFG->prefix."user WHERE username = '".$userid."'");
+            $user = $DB->get_record_sql ("SELECT * FROM {user} WHERE username = '?'", array(md5($userpass))); 
         }
         $id = $user->id;
         if (!empty($id)) {
@@ -93,6 +94,8 @@ require_once $CFG->dirroot ."/lib/datalib.php";
   function freemail_blog($image_name, $email, $subject, $body,$slurl) 
   {
     global $CFG;
+    global $DB;
+
     $entrypablish = '';
     if (!file_exists ($CFG->dataroot."/1/site_mod_files/blog")) {
         make_upload_directory("1/site_mod_files/blog");
@@ -841,6 +844,8 @@ return $itemId;
 
 function freemail_setlog($text)
 {
+    print $text;
+    return;
     global $CFG;
      if (!file_exists($CFG->dataroot."/freemail_logs")) { 
                 if (!make_upload_directory("freemail_logs")) {

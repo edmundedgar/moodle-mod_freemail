@@ -31,9 +31,9 @@ if (!get_field("config","value","name","freemail_mail_user_pass")) {
   
 }
 
-if (!get_field("config","value","name","freemail_mail_box_settinds")) {
+if (!get_field("config","value","name","freemail_mail_box_settings")) {
     $rec = new object();
-    $rec->name = "freemail_mail_box_settinds";
+    $rec->name = "freemail_mail_box_settings";
     $rec->value = "mail.yourdomen.com:110/pop3/notls}INBOX";
     insert_record('config',$rec);
                  

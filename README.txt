@@ -5,6 +5,8 @@
 * @copyright Copyright (c) 2008 Serafim Panov
 * @license http://www.gnu.org/licenses/gpl-3.0.html GNU GPL v3
 * @author Serafim Panov
+* @author Paul Preibisch
+* @author Edmund Edgar
 * 
 *
 */

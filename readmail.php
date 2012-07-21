@@ -16,14 +16,15 @@ ini_set("include_path", "$_PATHS[pear]");
 
 require_once 'Mail/IMAPv2.php';
 require_once "sllib.php";   
-$connection = $CFG->pop3_or_imap.'://'.$CFG->freemail_mail_user_name.':'.$CFG->freemail_mail_user_pass.'@'.$CFG->freemail_mail_box_settinds;
+$connection = $CFG->freemail_pop3_or_imap.'://'.$CFG->freemail_mail_user_name.':'.$CFG->freemail_mail_user_pass.'@'.$CFG->freemail_mail_box_settings;
+
 
 
 
 
 
 //use below for gmail and gmail accounts
-$msg =& new Mail_IMAPv2($connection);
+$msg = new Mail_IMAPv2($connection);
 $attachments = array();
 
 $msgcount = $msg->messageCount(); 
@@ -137,7 +138,8 @@ if ($msgcount > 0)
             }
             //SECOND LIFE PATCH--END
 
-            $msg->delete($mid);
+            print "Skipping delete";
+            //$msg->delete($mid);
             $usermailcontent[] = array('size'=>$msg->header[$mid]['Size'], 'email'=>$msg->header[$mid]['from'][0], 'subject'=>$msg->header[$mid]['subject'], 'messages'=>$messagebody['message'], 'subcommands'=>$subcomm, 'mescommands'=>$messcomm, 'image'=>$imagebody, 'image_name'=>$imagename, 'body'=>$messagebody['message'], 'attachments'=>$attachments,'slurl'=>$slurl);
         }
     }

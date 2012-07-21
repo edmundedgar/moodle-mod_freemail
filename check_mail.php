@@ -16,7 +16,7 @@ require_once "readmail.php";
 //-----------No Edit------------------//
 
 // Display the Moodle page header -- keeps the page consistent with other Moodle features
-print_header_simple('SLOODLE Freemail - Postcard Blogger', 'SLOODLE Freemail - Postcard Blogger');
+echo $OUTPUT->heading('SLOODLE Freemail - Postcard Blogger', 1);
 echo "<div>&nbsp;</div>\n";
 
 $commands = array("HELP");
@@ -65,9 +65,7 @@ if (is_array($mails)) {
         $subline = explode (":", $mail['subject']);
         $subline[0] = strtolower($subline[0]);
         $mail['subject'] = trim($mail['subject']);
-        
 
-        
         $mail['messages'] = str_replace("=20", "\r\n", strip_tags($mail['messages']));
          
         if ($CFG->freemail_subjectline == 1) {
@@ -215,7 +213,7 @@ if (is_array($mails)) {
 }
 
 // Display the Moodle page footer
-print_footer();
+//print $OUTPUT->footer();
 
 // Disable notices from being reported -- there is a bug in the IMAP system causing a notice to be reported on shutdown.
 if (error_reporting() >= E_NOTICE) error_reporting(E_PARSE);
