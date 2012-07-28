@@ -10,6 +10,8 @@ abstract class freemail_moodle_importer {
     var $_images = array();
     var $_userid;
 
+    var $_user = null;
+
     // Return true to say that this processor can process the email.
     // For example, if we have a rule that blog subjects have to begin with "b:", we'll check for that.
     function can_process() {
@@ -50,6 +52,62 @@ abstract class freemail_moodle_importer {
         return $this->_images;
     }
 
+    // Fetch, cache and return a Moodle user record, loading if necessary.
+    // Return null on failure.
+    function user($reload = false) {
+
+        if (!$userid = intval($this->_userid)) {
+            return null;
+        }
+
+        if ( !$reload && !is_null($this->_user) ) {
+            return $this->_user;
+        }
+
+        global $DB;
+        $this->_user = $DB->get_record('user', array('id'=>$userid));
+
+        return $this->_user;
+
+    }
+ 
+    // Notify the user that their content has been imported.
+    // In most cases this is probably OK as is, 
+    // but you'll want to override user_notification_title() and user_notification_text() 
+    // ...to customized the content of the email.
+    // In the SLOODLE case we'll do some exotic stuff like sending an in-world instant message, so this will be overloaded..
+    public function notify_user() {
+
+        if (!$user = $this->user()) {
+            return false;
+        }
+
+        if (!$title = $this->user_notification_title()) {
+            return false;
+        }
+
+        if (!$body = $this->user_notification_text()) {
+            return false;
+        }
+
+        $supportuser = generate_email_supportuser();
+        email_to_user($user, $supportuser, $subject, $messagetext);
+
+    }
+
+    // The title of the notification sent to the user to say their content has been imported.
+    // You will probably want to overload this.
+    function user_notification_title() {
+        return 'Content has been imported';
+    }
+
+    // The title of the notification sent to the user to say their content has been imported.
+    // You will probably want to overload this to give them specific instructions about where to find their content
+    // ...and if it's been imported in draft form, where to go to publish it.
+    function user_notification_text() {
+        return 'Your content has been imported into Moodle.'."\n";
+    }
+
     static function available_moodle_importers() {
 
         global $CFG;
@@ -62,7 +120,7 @@ abstract class freemail_moodle_importer {
         $importers = array();
 
         while (($importer_file = readdir($dh)) !== false) {
-            print "looking at $importer_file";
+            //print "looking at $importer_file";
 
             if (preg_match('/^(freemail_\w+_moodle_importer).php$/', $importer_file, $matches)) {
                 
@@ -83,6 +141,8 @@ abstract class freemail_moodle_importer {
         return $importers;
 
     }
- 
+
+    static function config_options() {
+    }
 
 }

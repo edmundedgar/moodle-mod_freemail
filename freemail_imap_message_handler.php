@@ -56,12 +56,25 @@ class freemail_imap_message_handler {
 
     }
 
+    public function load_header($mid) {
+
+        return $this->_header = @imap_header($this->_connection,$mid); 
+
+    }
+
     public function load($mid) {
 
-        if (!$this->_header = @imap_header($this->_connection,$mid)) {
-            return false;
-        }
         return $this->_get_msg($mid);
+
+    }
+
+    public function mark_flagged($mid) {
+
+        if (!$this->_connection) {
+            return null;
+        }
+
+        return @imap_setflag_full($this->_connection, $mid, "\\Flagged");
 
     }
 

@@ -31,23 +31,29 @@ class freemail_sloodle_email_processor extends freemail_email_processor {
 
     // Return the user ID
     function get_user_id() {
-        return 1;
-        return null;
+        return $this->_userid;
     }
 
     function prepare() {
 
         //extract and build the slurl - FIRE
-        $searchText = $this->_html_body;    
+        $search_text = $this->_html_body;    
 
-        $simname= $this->get_sl_info("sim_name",$searchText);
-        $username = $this->get_sl_info("username",$searchText);
+        $sl_info = $this->get_sl_info($search_text);
 
-        $x= $this->get_sl_coords("local_x",$searchText);
-        $y= $this->get_sl_coords("local_y",$searchText);
-        $z= $this->get_sl_coords("local_z",$searchText);
+        $uuid = $sl_info['agent_id'];
+        if (!$this->_userid = $this->get_user_id_for_avatar_uuid($uuid)) {
+            return false;
+        }
 
-        $slurl='http://slurl.com/secondlife/'.urlencode($simname).'/'.$x.'/'.$y.'/'.$z;
+        $simname = $sl_info['sim_name'];
+        $username = $sl_info['username'];
+
+        $x = intval($sl_info['local_x']);
+        $y = intval($sl_info['local_y']);
+        $z = intval($sl_info['local_z']);
+
+        $slurl = 'http://slurl.com/secondlife/'.urlencode($simname).'/'.$x.'/'.$y.'/'.$z;
 
         $messagebody = $this->_plain_body;
 
@@ -76,7 +82,6 @@ class freemail_sloodle_email_processor extends freemail_email_processor {
                     continue;
                 }
                 $this->add_image($filename, $data);
-                print "adding";
             }
         }
 
@@ -84,23 +89,78 @@ class freemail_sloodle_email_processor extends freemail_email_processor {
 
     }
 
+    function get_user_id_for_avatar_uuid($avuuid) {
+
+        if ( is_null($avuuid) || ($avuuid == '') ) {
+            return null;
+        }
+
+        global $DB;
+
+        $this->_userid = $DB->get_field('sloodle_users', 'userid', array('uuid'=>$avuuid));
+        return $this->_userid;
+
+    }
+
     /**
     * This method is used to extact text from the sl postcard email such as sim_name and agent_name
     * Example:
-    * @simname= getSlInfo("sim_name",$searchText);
-    * $username = getSlInfo("username",$searchText);
-    * @param string $findMe is the thing to search for - such as sim_name
-    * @param string $searchText is the text to be searched - such as the message body of the email
+    * $simname = $this->get_sl_info("sim_name",$email);
+    * @param string $find_me is the thing to search for - such as sim_name
+    * @param string $search_text is the text to be searched - such as the message body of the email
     * @return string Can return extracted content from the sl postcard - such as sim_name and agent_name 
     *  
     */
-    function get_sl_info($findMe,$searchText){
-        //now found the beginning of the value ex: sim_name=" so we have to account for the characters =" which is +2 characters
-        $findMeStartIndex = strpos($searchText,$findMe) + strlen($findMe) +2;
-        $findMeEndIndex = strpos($searchText,'"',$findMeStartIndex);
-        $findMeLength=$findMeEndIndex-$findMeStartIndex;
-        $findMeValue= substr($searchText,$findMeStartIndex,$findMeLength);
-        return $findMeValue; 
+    function get_sl_info($search_text){
+
+        /*
+        Text looks like this:
+        <!-- BEGIN POSTCARD DETAILS
+        agent_id=746ad236-d28d-4aab-93de-1e09a076c5f3
+        username="Edmund Earp"
+        region_id=5368d895-55d9-4206-9c1c-8660ce8fa306
+        sim_name="Cypris Village"
+        global_x=274595
+        global_y=271440
+        local_x=163
+        local_y=80
+        local_z=25
+        END POSTCARD DETAILS -->
+        */
+
+        $info = array();
+
+        // start by narrowing down to the postcard section.
+        $detail_start = 'BEGIN POSTCARD DETAILS';
+        $detail_end   = 'END POSTCARD DETAILS';
+
+        if (!preg_match('/^.*'.preg_quote($detail_start).'(.*)'.preg_quote($detail_end).'.*?$/s', $search_text, $matches)) {
+            return null;
+        }
+        $search_text = $matches[1];
+
+        $lines = explode("\n", $search_text);
+        foreach($lines as $line) {
+
+            $line = trim($line);
+            if (!preg_match('/^(.*?)\=(.*)$/', $line, $matches)) {
+                continue;
+            }
+
+            $name = $matches[1];
+            $value = $matches[2];
+
+            // remove quotation marks, if they're there.
+            if (preg_match('/\"(.*)\"/', $value, $matches)) {
+                $value= $matches[1];
+            }
+
+            $info[$name] = $value;
+
+        }
+
+        return $info;
+
     }
 
     /*

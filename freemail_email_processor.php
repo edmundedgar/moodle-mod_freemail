@@ -7,6 +7,7 @@ abstract class freemail_email_processor {
 
     // The following hold the raw data from the email.
     var $_subject;
+    var $_from_address;
     var $_html_body;
     var $_plain_body;
     var $_charset;
@@ -14,7 +15,7 @@ abstract class freemail_email_processor {
 
     // The following are filled during parsing. 
     var $_images= array();
-    var $_userid = array();
+    var $_userid = null;
     var $_prepared_body;
     var $_prepared_subject;
 
@@ -99,13 +100,17 @@ abstract class freemail_email_processor {
         $this->_prepared_body = $this->_plain_body;
         $this->_prepared_subject = $this->_subject;
 
+        if (!$this->_userid = $this->user_id_for_email($this->_from_address)) {
+            return false;
+        }
+
         return true;
 
     }
 
     // Return the user ID
     function get_user_id() {
-        return null;
+        return $this->_userid;
     }
 
     function set_charset($c) {
@@ -137,6 +142,10 @@ abstract class freemail_email_processor {
         $this->_subject = $s;
     }
 
+    function set_from_address($e) {
+        $this->_from_address = $e;
+    }
+
     function get_subject() {
         return $this->_subject;
     }
@@ -157,6 +166,29 @@ abstract class freemail_email_processor {
 
         return false;
     
+    }
+
+    function user_id_for_email($email) {
+
+        if (is_null($email)) {
+            return null;
+        }
+
+        global $DB;
+        $this->_userid = $DB->get_field('user', 'id', array('email'=>$email));
+
+        return $this->_userid;
+
+    }
+
+    function notify_user() {
+
+        if (!$importer = $this->_importer) {
+            return false;
+        }
+
+        return $importer->notify_user();
+
     }
 
 }

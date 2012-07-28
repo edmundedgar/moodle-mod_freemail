@@ -11,6 +11,8 @@ class freemail_blog_moodle_importer extends freemail_moodle_importer {
     var $_userid;
     */
 
+    var $_blogid = null;
+
     function is_available() {
         return true;
     }
@@ -48,7 +50,6 @@ class freemail_blog_moodle_importer extends freemail_moodle_importer {
         require_once($CFG->dirroot.'/blog/locallib.php');
         require_once($CFG->dirroot.'/tag/lib.php');
 
-
         $data = array(
             'subject' => $this->_title,
             'summary' => $this->_body,
@@ -63,6 +64,8 @@ class freemail_blog_moodle_importer extends freemail_moodle_importer {
         if (!$id = $blogentry->id) {
             return false;
         }
+
+        $this->_blogid = $id;
 
         $fs = get_file_storage();
 
@@ -86,4 +89,27 @@ class freemail_blog_moodle_importer extends freemail_moodle_importer {
 
     }
 
+    // TODO: Need to either localize this or make it editable.
+    function user_notification_title() {
+
+        return 'Blog entry created by email';
+
+    }
+
+    function user_notification_text() {
+
+        if ($blogid = intval($this->_blogid)) {
+            return false;
+        }
+
+        global $CFG;
+        //$url = $CFG->wwwroot.'/blog/index.php?entryid='.$blogid;
+        $editurl = $CFG->wwwroot.'/blog/edit.php?action=edit&entryid='.$blogid;
+
+        $str  = 'This is the blog import program at '.$CFG->wwwroot."\n";
+        $str .= 'Your blog entry has been created as a draft'."\n";
+        $str .= 'To publish your blog entry, go to:'."\n";
+        $str .= $editurl."\n";
+
+    }
 }
