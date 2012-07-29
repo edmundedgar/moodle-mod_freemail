@@ -126,7 +126,7 @@ abstract class freemail_moodle_importer {
             if (preg_match('/^(freemail_\w+_moodle_importer).php$/', $importer_file, $matches)) {
                 
                 $clsname = $matches[1];
-                require($importer_dir.'/'.$importer_file);
+                require_once($importer_dir.'/'.$importer_file);
                 if (!class_exists($clsname)) {
                     continue;
                 }

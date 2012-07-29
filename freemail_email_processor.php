@@ -37,7 +37,7 @@ abstract class freemail_email_processor {
             if (preg_match('/^(freemail_\w+_email_processor).php$/', $processor_file, $matches)) {
                 
                 $clsname = $matches[1];
-                require($processor_dir.'/'.$processor_file);
+                require_once($processor_dir.'/'.$processor_file);
                 if (!class_exists($clsname)) {
                     continue;
                 }

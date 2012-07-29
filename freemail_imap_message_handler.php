@@ -1,7 +1,7 @@
 <?php
 class freemail_imap_message_handler {
 
-    var $_connection;
+    var $_connection = null;
 
     var $_html_message;
     var $_plain_message;
@@ -10,6 +10,15 @@ class freemail_imap_message_handler {
     var $_header;
 
     public function connect($connection_string, $username, $password) {
+
+        // Reuse the existing connection if we have one and it's still alive.
+        if ( !is_null($this->_connection)) { 
+            if (@imap_ping($this->_connection) ) {
+                return $this->_connection; 
+            }
+            // Probably won't do anything, but let's be sure.
+            @imap_close($this->_connection);
+        }
 
         $this->_connection = @imap_open($connection_string, $username, $password);
         return $this->_connection;
@@ -36,13 +45,13 @@ class freemail_imap_message_handler {
 
     }
 
-    public function delete() {
+    public function delete($mid) {
 
         if (!$this->_connection) {
             return null;
         }
 
-        return @imap_delete($this->_connection);
+        return @imap_delete($this->_connection, $mid);
 
     }
 
