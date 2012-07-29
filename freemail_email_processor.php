@@ -181,6 +181,11 @@ abstract class freemail_email_processor {
 
     }
 
+    // By default, just tell the importer to notify them.
+    // This would normally be an email.
+    // Some handler may want to do their own handling
+    // ..and just get the subject and body from the importer.
+    // For example, in SLOODLE we send an in-world instant message.
     function notify_user() {
 
         if (!$importer = $this->_importer) {

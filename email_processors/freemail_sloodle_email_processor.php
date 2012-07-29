@@ -12,6 +12,8 @@
 */
 class freemail_sloodle_email_processor extends freemail_email_processor {
 
+    var $_avatar_uuid = null;
+
     // Check if SLOODLE is present.
     // TODO Maybe we should really check if it's installed and active...
     static function is_available() {
@@ -45,6 +47,8 @@ class freemail_sloodle_email_processor extends freemail_email_processor {
         if (!$this->_userid = $this->get_user_id_for_avatar_uuid($uuid)) {
             return false;
         }
+
+        $this->_avatar_uuid = $uuid;
 
         $simname = $sl_info['sim_name'];
         $username = $sl_info['username'];
@@ -103,12 +107,8 @@ class freemail_sloodle_email_processor extends freemail_email_processor {
     }
 
     /**
-    * This method is used to extact text from the sl postcard email such as sim_name and agent_name
-    * Example:
-    * $simname = $this->get_sl_info("sim_name",$email);
-    * @param string $find_me is the thing to search for - such as sim_name
     * @param string $search_text is the text to be searched - such as the message body of the email
-    * @return string Can return extracted content from the sl postcard - such as sim_name and agent_name 
+    * @return string An array containing names and values extracted from the sl postcard - such as sim_name and agent_name 
     *  
     */
     function get_sl_info($search_text){
@@ -151,7 +151,7 @@ class freemail_sloodle_email_processor extends freemail_email_processor {
             $value = $matches[2];
 
             // remove quotation marks, if they're there.
-            if (preg_match('/\"(.*)\"/', $value, $matches)) {
+            if (preg_match('/^\"(.*)\"$/', $value, $matches)) {
                 $value= $matches[1];
             }
 
@@ -163,27 +163,75 @@ class freemail_sloodle_email_processor extends freemail_email_processor {
 
     }
 
-    /*
-    * This function gets the sl coordinates from the sl postcard email body 
-    * Example:
-    * $x= getSlCoords("local_x",$searchText);
-    * $y= getSlCoords("local_y",$searchText);
-    * $z= getSlCoords("local_z",$searchText);
-    * $slurl='http://slurl.com/secondlife/'.urlencode($simname).'/'.$x.'/'.$y.'/'.$z;
-    * echo $slurl; 
-    * 
-    * @param string $findMe is the thing to coordinate name search for - such as local_x
-    * @param string $searchText is the text to be searched - such as the message body of the email
-    * @return string returns the extracted coordinates
-    */
-    function get_sl_coords($findMe,$searchText){
-        //now found the beginning of the value ex: sim_name=" so we have to account for the characters =" which is +2 characters
-        $findMeStartIndex = strpos($searchText,$findMe) + strlen($findMe) +1;
+    public function notify_user() {
 
-        $findMeEndIndex =   strpos($searchText,"\n",$findMeStartIndex);
-        $findMeLength=$findMeEndIndex-$findMeStartIndex-1;
-        $findMeValue= substr($searchText,$findMeStartIndex,$findMeLength);
-        return $findMeValue; 
+        if (!$importer = $this->_importer) {
+            // print "no importer";
+            return false;
+        }
+
+        if (!$user = $importer->user()) {
+            //print "no user";
+            return false;
+        }
+
+        if (!$messagetext = $importer->user_notification_text()) {
+            //print "No text to notify.";
+            return false;
+        }
+
+        // Try to notify the user by sendint them an in-world message.
+        // This will only work if SLOODLE is installed, and at least one capable of handling it is running in-world.
+        // The first object capable of doing this will probably be in SLOODLE 2.2. 
+        if ($this->notify_user_by_instant_message($messagetext)) {
+            // print "Notify went OK, returning.";
+            return true;
+        }
+
+        if (!$subject = $importer->user_notification_title()) {
+            print "No title.";
+            return false;
+        }
+
+        //print "Instant messaging didn't work, trying email instead.";
+        $supportuser = generate_email_supportuser();
+
+        return email_to_user($user, $supportuser, $subject, $messagetext);
+
+    }
+
+    public function notify_user_by_instant_message($messagetext) {
+
+        global $CFG;
+
+        // Code for sloodle instant message
+        // Should probably be a define() somewhere...
+        $instant_message_code = 163290001;
+
+        // Remove line returns for instant message.
+        $messagetext = preg_replace("/\n/", " ", $messagetext);
+
+        if (!$avuuid = $this->_avatar_uuid) {
+            //print "no avuuid";
+            return false;
+        }
+
+        if (!file_exists($CFG->dirroot.'/mod/sloodle/init.php')) {
+            //print "no sloodle init - sloodle is too old or not installed";
+            return false;
+        }
+
+        require_once($CFG->dirroot.'/mod/sloodle/init.php'); 
+
+        // SLOODLE apparently not installed.
+        if (!class_exists('SloodleActiveObject')) {
+            //print "no SloodleActiveObject class";
+            return false;
+        }
+
+        $params = array('avuuid' => $avuuid, 'message' => $messagetext);
+        return SloodleActiveObject::NotifySubscriberObjects('message_to_user', $instant_message_code, 0, 0, $params, false, true);
+
     }
 
 }

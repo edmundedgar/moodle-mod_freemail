@@ -72,7 +72,7 @@ abstract class freemail_moodle_importer {
     }
  
     // Notify the user that their content has been imported.
-    // In most cases this is probably OK as is, 
+    // In most cases this is probably OK as is. 
     // but you'll want to override user_notification_title() and user_notification_text() 
     // ...to customized the content of the email.
     // In the SLOODLE case we'll do some exotic stuff like sending an in-world instant message, so this will be overloaded..
@@ -82,15 +82,16 @@ abstract class freemail_moodle_importer {
             return false;
         }
 
-        if (!$title = $this->user_notification_title()) {
+        if (!$subject = $this->user_notification_title()) {
             return false;
         }
 
-        if (!$body = $this->user_notification_text()) {
+        if (!$messagetext = $this->user_notification_text()) {
             return false;
         }
 
         $supportuser = generate_email_supportuser();
+
         email_to_user($user, $supportuser, $subject, $messagetext);
 
     }

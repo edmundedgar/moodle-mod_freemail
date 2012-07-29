@@ -98,7 +98,8 @@ class freemail_blog_moodle_importer extends freemail_moodle_importer {
 
     function user_notification_text() {
 
-        if ($blogid = intval($this->_blogid)) {
+        if (!$blogid = intval($this->_blogid)) {
+            print "no blogid";
             return false;
         }
 
@@ -110,6 +111,8 @@ class freemail_blog_moodle_importer extends freemail_moodle_importer {
         $str .= 'Your blog entry has been created as a draft'."\n";
         $str .= 'To publish your blog entry, go to:'."\n";
         $str .= $editurl."\n";
+
+        return $str;
 
     }
 }
