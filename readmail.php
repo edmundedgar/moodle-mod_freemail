@@ -98,6 +98,7 @@ function freemail_read_mail() {
                 $statuses['messages']['failures'][$mid] = array('error'=>'Could not load.');
                 continue;
             }
+            freemail_verbose_output("Loaded message...");
 
             $htmlmsg = $handler->get_html_message();;
             $plainmsg = $handler->get_plain_message();; 
@@ -107,6 +108,8 @@ function freemail_read_mail() {
             $fromaddress = $handler->get_from_address();
 
             foreach($email_processors as $processor) {
+
+                freemail_verbose_output("Trying processor...");
 
                 $processor->set_subject($subject);
                 $processor->set_from_address($fromaddress);
@@ -121,6 +124,7 @@ function freemail_read_mail() {
                     $processor->add_attachment($attachment_filename, $attachment_body);
                 }
 
+                freemail_verbose_output("Preparing message...");
                 // Couldn't make sense of it, skip
                 if (!$processor->prepare()) {
                     freemail_verbose_output("Could not prepare email.");
@@ -146,9 +150,13 @@ function freemail_read_mail() {
                 // Mark the message as flagged 
                 // $handler->mark_flagged($mid);
 
+                freemail_verbose_output("Importing...");
                 $ok = $processor->import();
 
+                freemail_verbose_output("Notifying user...");
                 $processor->notify_user();
+
+                freemail_verbose_output("Handling of this email complete.");
 
                 break;
 
