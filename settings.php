@@ -35,7 +35,7 @@ $settings->add( new admin_setting_configtext(
                 ''));
   
 $settings->add( new admin_setting_configtext(
-                'freemail_mail_emailadress',
+                'freemail_mail_emailaddress',
                 get_string('freemail:emailtosend', 'freemail'),
                 '',
                 ''));

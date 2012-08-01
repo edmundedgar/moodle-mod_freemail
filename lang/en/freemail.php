@@ -9,7 +9,8 @@
 * 
 *
 */
-$string['modulename'] = 'freemail';
+$string['modulename'] = 'Freemail';
+$string['modulenameplural'] = 'Freemail';
 $string['freemail_001'] = 'Please change CHMOD to 777 (writable) on \"freemail\" folder in your moodle module directory!';
 $string['freemail_002'] = 'Don\'t forget to set cron job to \"check_mail.php\" file. Full path is ';
 $string['freemail_003'] = 'or Moodle main cron file:';
@@ -39,7 +40,7 @@ $string['freemail_027'] = 'add blog';
 $string['freemail_028'] = 'gallery albom';
 $string['freemail_029'] = 'Parse mail is ended';
 $string['freemail_030'] = 'upload attached files';
-$string['freemail_031'] = 'Email adress (FreeMail)';
+$string['freemail_031'] = 'Email address (FreeMail)';
 $string['freemail:cronnotice'] = '<b>Welcome to the Freemail module which has been modified for Second Life!</b>';
 $string['freemail:cronnotice'] .= "<br>For more information about this module, please visit: <a href='http://slisweb.sjsu.edu/sl/index.php/Sloodle_Postcard_Blogger_(Freemail)'>The Sloodle Wiki Link for the Postcard Blogger</a>";
 $string['freemail:cronnotice'] .="<br>If you are running this manually, we suggest that you set up a <a href='http://slisweb.sjsu.edu/sl/index.php/Cron'>cron job on your server</a>";    
@@ -79,5 +80,10 @@ $string['freemail:log']='Freemail Log:';
 $string['freemail:testaccount']='Test Account Settings';   
 $string['freemail:forums']='Discussion Forums';  
 $string['freemail_subjectline']='1:'; 
+
+$string['freemail_explanation_wheretosend'] = 'To blog from Second Life or OpenSim, email a postcard to {$a}.';
+$string['freemail_explanation_howtoblog'] = 'Put the title of your blog in the subject line and the text in the body of the email.'; 
+$string['freemail_testbutton'] = 'Click this button to test.'; 
+$string['freemail_delete_message'] = 'Skip message deletion. (May result in duplicate blog entries.';
 
 ?>

@@ -39,9 +39,9 @@ if (!get_field("config","value","name","freemail_mail_box_settings")) {
                  
 }
 
-if (!get_field("config","value","name","freemail_mail_emailadress")) {
+if (!get_field("config","value","name","freemail_mail_emailaddress")) {
     $rec = new object();
-    $rec->name = "freemail_mail_emailadress";
+    $rec->name = "freemail_mail_emailaddress";
     $rec->value = "mail@yourdomain.com";
     insert_record('config',$rec);
 }
@@ -107,7 +107,7 @@ if (!get_field("config","value","name","freemail_mess_001")) {
 if (!get_field("config","value","name","freemail_mess_002")) {
     $rec = new object();
     $rec->name = "freemail_mess_002";
-    $rec->value = "Email address isnt registered.";
+    $rec->value = "Email addresss isnt registered.";
     insert_record('config',$rec);
                   
 }
@@ -340,8 +340,8 @@ function freemail_cron () {
               $datasmtphosts = get_record('config', 'name', 'smtphosts');
               $datasmtpuser = get_record('config', 'name', 'smtpuser');
               $datasmtppass = get_record('config', 'name', 'smtppass');
-              $datanoreply = get_record('config', 'name', 'noreplyaddress');
-              $dataemailadress = get_record('freemail', 'name', 'mail_emailadress'); 
+              $datanoreply = get_record('config', 'name', 'noreplyaddresss');
+              $dataemailaddress = get_record('freemail', 'name', 'mail_emailaddress'); 
 
               if (!empty($datasmtphosts->value)) {
                   $mail->IsSMTP();
@@ -354,7 +354,7 @@ function freemail_cron () {
               {
                   $mail->IsMail();
               }
-              $mail->From     = $dataemailadress->value;
+              $mail->From     = $dataemailaddress->value;
               $mail->FromName = "FreeMail Robot";
               $mail->AddAddress($CFG->freemail_mail_admin_email, "");
               $mail->Subject = "FreeMail Problems";
