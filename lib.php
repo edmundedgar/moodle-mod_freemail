@@ -119,11 +119,13 @@ function freemail_print_recent_activity($course, $isteacher, $timestart) {
  **/
 function freemail_cron () {
 
+    global $CFG;
+
     require_once 'freemail_imap_message_handler.php'; 
     require_once 'freemail_email_processor.php'; 
     require_once 'freemail_moodle_importer.php';
 
-    freemail_email_processor::read_mail(false, false, null, false, true);
+    freemail_email_processor::read_mail($CFG, false, false, null, false, true);
 
     return true;
 

@@ -204,9 +204,11 @@ class freemail_email_processor {
 
     }
 
-    static function read_mail($verbose, $daemon, $handler = null, $nodelete = false, $cron = false) {
+    static function read_mail($cfg, $verbose, $daemon, $handler = null, $nodelete = false, $cron = false) {
 
-        global $CFG;
+        // This allows you to hard-code some settings in your config.php and use them in preference to whatever might be set in the web UI.
+        // This is useful to us at Avatar Classroom in a multi-site setting, but probably not to anybody else.
+        $cfg = isset($cfg->freemail_force_settings) ? $cfg->freemail_force_settings : $cfg;
 
         $statuses = array(
             'result' => array(),
@@ -231,7 +233,7 @@ class freemail_email_processor {
 
         if (!$giveup) {
             freemail_email_processor::verbose_output($verbose, "Connecting...");
-            if (!$handler->connect($CFG->freemail_mail_box_settings, $CFG->freemail_mail_user_name, $CFG->freemail_mail_user_pass)) {
+            if (!$handler->connect($cfg->freemail_mail_box_settings, $cfg->freemail_mail_user_name, $cfg->freemail_mail_user_pass)) {
                 freemail_email_processor::verbose_output($verbose, "Connection failed.");
                 $statuses['errors']["-2"] = "Connection failed. Could not fetch email.";
                 $giveup = true;
@@ -257,8 +259,8 @@ class freemail_email_processor {
 
             if ($msgcount > 0)  {  
 
-                if ($msgcount > $CFG->freemail_mail_maxcheck) {
-                    $msgcount = $CFG->freemail_mail_maxcheck;
+                if ($msgcount > $cfg->freemail_mail_maxcheck) {
+                    $msgcount = $cfg->freemail_mail_maxcheck;
                 }
 
                 for ($mid = 1; $mid <= $msgcount; $mid++) {
@@ -278,13 +280,20 @@ class freemail_email_processor {
                     $subject = $handler->get_subject();
                     $fromaddress = $handler->get_from_address();
 
+                    $toaddress = $handler->get_to_address();
+                    if (!strtolower($toaddress) == strtolower($cfg->freemail_mail_email_address)) {
+                        print "not for us: $toaddress";
+                        // Not for us.
+                        continue;
+                    }
+
                     $info = array(
                         'subject' => $subject,
                         'fromaddress' => $fromaddress
                     );
 
                     $size_in_bytes = $handler->get_size_in_bytes();
-                    if ($size_in_bytes > $CFG->freemail_mail_maxsize) {
+                    if ($size_in_bytes > $cfg->freemail_mail_maxsize) {
                         $statuses['messages'][] = array( 
                             'errors' => array('-101' => 'Could not load header.'),
                             'info' => $info
@@ -418,12 +427,12 @@ class freemail_email_processor {
 
         }
 
-        if ($CFG->freemail_mail_admin_email) {
+        if ($cfg->freemail_mail_admin_email) {
             // in daemon mode, only send a report if some messages were actually processed.
             if ( (!$daemon & !$cron) || $msgcount) { 
                 $subject = "Email processing report";
                 $body = freemail_email_processor::status_text($statuses);
-                mail($CFG->freemail_mail_admin_email, $subject, $body); 
+                mail($cfg->freemail_mail_admin_email, $subject, $body); 
             }
         }
 

@@ -77,7 +77,7 @@ if (isset($_POST['do_test'])) {
     $daemon = false;
 
     echo '<textarea rows="10" style="width:100%">';
-    freemail_email_processor::read_mail($verbose, $daemon, null, $nodelete);
+    freemail_email_processor::read_mail($CFG, $verbose, $daemon, null, $nodelete);
     echo '</textarea>';
 }
 if ($nodelete && $daemon) {

@@ -1,6 +1,13 @@
 <?php
 
 // This selection box determines whether or not auto-registration is allowed on the site
+ 
+$settings->add( new admin_setting_configtext(
+                'freemail_mail_email_address',
+                get_string('freemail:emailtosend', 'freemail'),
+                '',
+                ''));
+
 
 $settings->add( new admin_setting_configtext(
                 'freemail_mail_user_name',
@@ -35,6 +42,7 @@ $settings->add( new admin_setting_configtext(
                 get_string('freemail:adminmail', 'freemail'),
                 '',
                 ''));
+  
   
 $settings->add( new admin_setting_configtext(
                 'freemail_mail_maxcheck',

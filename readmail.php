@@ -11,7 +11,9 @@
 *
 */
 
-define('CLI_SCRIPT', true);
+if (isset($argv)) {
+    define('CLI_SCRIPT', true);
+}
 require_once "../../config.php";
 
 // Class for handling an imap message connection, and fetching and parsing emails one by one.
@@ -36,14 +38,14 @@ if ($nodelete && $daemon) {
 
 if ($daemon) {
 
-    while ($handler = freemail_email_processor::read_mail($verbose, $daemon, $handler, false)) {
+    while ($handler = freemail_email_processor::read_mail($CFG, $verbose, $daemon, $handler, false)) {
         freemail_email_processor::verbose_output($verbose, "Handling run done, sleeping");
         sleep(2);
     }
 
 } else {
 
-    freemail_email_processor::read_mail($verbose, $daemon, null, $nodelete);
+    freemail_email_processor::read_mail($CFG, $verbose, $daemon, null, $nodelete);
 
 }
 
