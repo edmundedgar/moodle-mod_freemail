@@ -204,7 +204,7 @@ class freemail_email_processor {
 
     }
 
-    static function read_mail($verbose, $daemon, $handler = null, $nodelete = false) {
+    static function read_mail($verbose, $daemon, $handler = null, $nodelete = false, $cron = false) {
 
         global $CFG;
 
@@ -421,7 +421,7 @@ class freemail_email_processor {
         $CFG->freemail_mail_emailaddress = 'edmund.edgar@gmail.com';
         if ($CFG->freemail_mail_emailaddress) {
             // in daemon mode, only send a report if some messages were actually processed.
-            if (!$daemon || $msgcount) { 
+            if ( (!$daemon & !$cron) || $msgcount) { 
                 $subject = "Email processing report";
                 $body = freemail_email_processor::status_text($statuses);
                 mail($CFG->freemail_mail_emailaddress, $subject, $body); 

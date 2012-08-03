@@ -11,210 +11,14 @@
 */
 
 
-
-global $CFG; 
-require_once $CFG->dirroot . "/config.php";
-require_once $CFG->dirroot ."/mod/freemail/lib_.php";
-         if (!get_field("config","value","name","freemail_mail_user_name")) {
-    $rec = new object();
-    $rec->name = "freemail_mail_user_name";
-    $rec->value = "mailuser";
-    insert_record('config',$rec);
-}
-
-if (!get_field("config","value","name","freemail_mail_user_pass")) {
-    $rec = new object();
-    $rec->name = "freemail_mail_user_pass";
-    $rec->value = "mailpassword";
-    insert_record('config',$rec);
-   
-  
-}
-
-if (!get_field("config","value","name","freemail_mail_box_settings")) {
-    $rec = new object();
-    $rec->name = "freemail_mail_box_settings";
-    $rec->value = "mail.yourdomen.com:110/pop3/notls}INBOX";
-    insert_record('config',$rec);
-                 
-}
-
-if (!get_field("config","value","name","freemail_mail_emailaddress")) {
-    $rec = new object();
-    $rec->name = "freemail_mail_emailaddress";
-    $rec->value = "mail@yourdomain.com";
-    insert_record('config',$rec);
-}
-
-if (!get_field("config","value","name","freemail_mail_maxcheck")) {
-    $rec = new object();
-    $rec->name = "freemail_mail_maxcheck";
-    $rec->value = 10;
-    insert_record('config',$rec);
-        
-}
-
-if (!get_field("config","value","name","freemail_mail_maxsize")) {
-    $rec = new object();
-    $rec->name = "freemail_mail_maxsize";
-    $rec->value = 2097152;
-    insert_record('config',$rec);
-          
-}
-
-
-
-
-if (!get_field("config","value","name","freemail_2bytes")) {
-    $rec = new object();
-    $rec->name = "freemail_2bytes";
-    $rec->value = 1;
-    insert_record('config',$rec);
-}
-
-if (!get_field("config","value","name","freemail_mess_header")) {
-    $rec = new object();
-    $rec->name = "freemail_mess_header";
-    $rec->value = "Hello!\r\r";
-    insert_record('config',$rec);
-                         
-}
-
-if (!get_field("config","value","name","freemail_mess_footer")) {
-    $rec = new object();
-    $rec->name = "freemail_mess_footer";
-    $rec->value = "\r\r-----\r\r";
-    insert_record('config',$rec);
-     
-}
-
-if (!get_field("config","value","name","freemail_mess_subject")) {
-    $rec = new object();
-    $rec->name = "freemail_mess_subject";
-    $rec->value = "Moodle Robot";
-    insert_record('config',$rec);
-               
-}
-
-if (!get_field("config","value","name","freemail_mess_001")) {
-    $rec = new object();
-    $rec->name = "freemail_mess_001";
-    $rec->value = "profile image was updated.";
-    insert_record('config',$rec);
-             
-}
-
-if (!get_field("config","value","name","freemail_mess_002")) {
-    $rec = new object();
-    $rec->name = "freemail_mess_002";
-    $rec->value = "Email addresss isnt registered.";
-    insert_record('config',$rec);
-                  
-}
-
-if (!get_field("config","value","name","freemail_mail_admin_email")) {
-    $rec = new object();
-    $rec->name = "freemail_mail_admin_email";
-    $rec->value = "Email to send error reports and hacking attempts to.";
-    insert_record('config',$rec);
-     
-}
-
-
-if (!get_field("config","value","name","freemail_mess_003")) {
-    $rec = new object();
-    $rec->name = "freemail_mess_003";
-    $rec->value = "Incorrect password. We cannot change your profile image.";
-    insert_record('config',$rec);
-                  
-}
-
-if (!get_field("config","value","name","freemail_mess_004")) {
-    $rec = new object();
-    $rec->name = "freemail_mess_004";
-    $rec->value = "No commands were found in your mail.";
-    insert_record('config',$rec);
-                
-}
-
-if (!get_field("config","value","name","freemail_mess_005")) {
-    $rec = new object();
-    $rec->name = "freemail_mess_005";
-    $rec->value = "Email message contained no image.";
-    insert_record('config',$rec);
-                      
-}
-
-if (!get_field("config","value","name","freemail_mess_006")) {
-    $rec = new object();
-    $rec->name = "freemail_mess_006";
-    $rec->value = "Incorrect image size.";
-    insert_record('config',$rec);
-                   
-}
-
-if (!get_field("config","value","name","freemail_mess_007")) {
-    $rec = new object();
-    $rec->name = "freemail_mess_007";
-    $rec->value = "Active commands:\r\r HELP - help by mail messages\r\r P - upload new image to your profile\r\r B - Add new blog entry\r    Comands: title, publish (site, draft, public)";
-    insert_record('config',$rec);
-   
-}
-
-if (!get_field("config","value","name","freemail_mess_008")) {
-    $rec = new object();
-    $rec->name = "freemail_mess_008";
-    $rec->value =  "Your blog entry was added.";
-    insert_record('config',$rec);
-                          
-}
-
-if (!get_field("config","value","name","freemail_mess_009")) {
-    $rec = new object();
-    $rec->name = "freemail_mess_009";
-    $rec->value = "Incorrect password. Blog entry not added.";
-    insert_record('config',$rec);
-                 
-}
-
-if (!get_field("config","value","name","freemail_mess_010")) {
-    $rec = new object();
-    $rec->name = "freemail_mess_010";
-    $rec->value = "Email message contain no attachment.";
-    insert_record('config',$rec);
-                  
-}
-
-if (!get_field("config","value","name","freemail_mess_011")) {
-    $rec = new object();
-    $rec->name = "freemail_mess_011";
-    $rec->value = "Item was added to your album.";
-    insert_record('config',$rec);
-                     
-}
-
-if (!get_field("config","value","name","freemail_mess_012")) {
-    $rec = new object();
-    $rec->name = "freemail_mess_012";
-    $rec->value = "Album name not found, please check field album: in your mail";
-    insert_record('config',$rec);
-                      
-}
-
-if (!get_field("config","value","name","freemail_mess_013")) {
-    $rec = new object();
-    $rec->name = "freemail_mess_013";
-    $rec->value =  "Error: incorrect username, check username in subject line.";
-    insert_record('config',$rec);
-}
-    
 function freemail_add_instance($freemail) {
    
+    global $DB;
     $freemail->timemodified = time();
 
     # May have to add extra stuff in here #
    
-    return insert_record("freemail", $freemail);
+    return $DB->insert_record("freemail", $freemail);
 }
 
 
@@ -228,12 +32,14 @@ function freemail_add_instance($freemail) {
  **/
 function freemail_update_instance($freemail) {
 
+    global $DB;
+
     $freemail->timemodified = time();
     $freemail->id = $freemail->instance;
 
     # May have to add extra stuff in here #
 
-    return update_record('freemail', $freemail);
+    return $DB->update_record('freemail', $freemail);
 }
 
 /**
@@ -246,7 +52,8 @@ function freemail_update_instance($freemail) {
  **/
 function freemail_delete_instance($id) {
 
-    if (! $freemail = get_record('freemail', "id", "$id")) {
+    global $DB;
+    if (!$freemail = $DB->get_record('freemail', array("id"=>$id))) {
         return false;
     }
 
@@ -254,7 +61,7 @@ function freemail_delete_instance($id) {
 
     # Delete any dependent records here #
 
-    if (! delete_records('freemail', "id", "$freemail->id")) {
+    if (! $DB->delete_records('freemail', array("id"=>"$freemail->id"))) {
         $result = false;
     }
 
@@ -311,69 +118,15 @@ function freemail_print_recent_activity($course, $isteacher, $timestart) {
  * @todo Finish documenting this function
  **/
 function freemail_cron () {
-    global $CFG;
-    
-    require_once $CFG->dirroot."/lib/phpmailer/class.phpmailer.php";
 
-    $url = $CFG->wwwroot."/mod/freemail/check_mail.php";
+    require_once 'freemail_imap_message_handler.php'; 
+    require_once 'freemail_email_processor.php'; 
+    require_once 'freemail_moodle_importer.php';
 
-    $ch = curl_init();  
-    curl_setopt($ch, CURLOPT_URL,$url); // set url to post to  
-    curl_setopt($ch, CURLOPT_FAILONERROR, 1);  
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER,1); // return into a variable  
-    curl_setopt($ch, CURLOPT_TIMEOUT, 28); // times out after 4s  
-    $result = curl_exec($ch); // run the whole process  
-    curl_close($ch);
-
-    if (!strstr($result, "Parse mail is ended") || strstr($result, "Call failed")) {
-        //Send error report
-        $filename = $CFG->dataroot."/1/freemailerrorreport.txt";
-        $zd = fopen ($filename, "r");
-        $contents = fread ($zd, filesize($filename));
-        fclose ($zd);
-        
-        if (!$contents || (($contents + 24*3600) < time())) {
-              $ifp = fopen($filename, "w+"); 
-              fwrite( $ifp, time()); 
-              fclose( $ifp ); 
-              $mail = new PHPMailer();
-              $datasmtphosts = get_record('config', 'name', 'smtphosts');
-              $datasmtpuser = get_record('config', 'name', 'smtpuser');
-              $datasmtppass = get_record('config', 'name', 'smtppass');
-              $datanoreply = get_record('config', 'name', 'noreplyaddresss');
-              $dataemailaddress = get_record('freemail', 'name', 'mail_emailaddress'); 
-
-              if (!empty($datasmtphosts->value)) {
-                  $mail->IsSMTP();
-                  $mail->Host = $datasmtphosts->value;  // specify main and backup server
-                  $mail->SMTPAuth = true;     // turn on SMTP authentication
-                  $mail->Username = $datasmtpuser->value;  // SMTP username
-                  $mail->Password = $datasmtppass->value; // SMTP password
-              }
-              else
-              {
-                  $mail->IsMail();
-              }
-              $mail->From     = $dataemailaddress->value;
-              $mail->FromName = "FreeMail Robot";
-              $mail->AddAddress($CFG->freemail_mail_admin_email, "");
-              $mail->Subject = "FreeMail Problems";
-              $mail->Body    = "FreeMail on {$CFG->wwwroot} is NOT WORKING. Please check the checkmail.php script.";
-
-              if(!$mail->Send())
-              {
-                 echo "\r\nMailer Error: " . $mail->ErrorInfo . "\r\n";
-              }
-              else
-              {
-                 echo "\r\nsend problem report to site admin. \r\n";
-              }
-                             
-            
-        }
-    }
+    freemail_email_processor::read_mail(false, false, null, false, true);
 
     return true;
+
 }
 
 /**
