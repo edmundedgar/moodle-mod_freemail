@@ -418,13 +418,12 @@ class freemail_email_processor {
 
         }
 
-        $CFG->freemail_mail_emailaddress = 'edmund.edgar@gmail.com';
-        if ($CFG->freemail_mail_emailaddress) {
+        if ($CFG->freemail_mail_admin_email) {
             // in daemon mode, only send a report if some messages were actually processed.
             if ( (!$daemon & !$cron) || $msgcount) { 
                 $subject = "Email processing report";
                 $body = freemail_email_processor::status_text($statuses);
-                mail($CFG->freemail_mail_emailaddress, $subject, $body); 
+                mail($CFG->freemail_mail_admin_email, $subject, $body); 
             }
         }
 

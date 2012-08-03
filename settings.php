@@ -17,9 +17,10 @@ $settings->add( new admin_setting_configtext(
 $settings->add( new admin_setting_configtext(
                 'freemail_mail_box_settings',
                 get_string('freemail:mailboxsettings', 'freemail'),
-                get_string('freemail:gmailuse','freemail').'imap.gmail.com:993/INBOX#ssl',
+                get_string('freemail:gmailuse','freemail').'{imap.gmail.com:993/imap/ssl}INBOX',
                 ''));
  
+/*
 $settings->add( new admin_setting_configselect(
                 'freemail_pop3_or_imap',
                 get_string('freemail:mailaccounttype','freemail'),
@@ -27,6 +28,7 @@ $settings->add( new admin_setting_configselect(
                 0,
                 array('pop3' => 'POP3', 'imap' => 'IMAP')
 ));
+*/
   
 $settings->add( new admin_setting_configtext(
                 'freemail_mail_admin_email',
@@ -34,12 +36,6 @@ $settings->add( new admin_setting_configtext(
                 '',
                 ''));
   
-$settings->add( new admin_setting_configtext(
-                'freemail_mail_emailaddress',
-                get_string('freemail:emailtosend', 'freemail'),
-                '',
-                ''));
- 
 $settings->add( new admin_setting_configtext(
                 'freemail_mail_maxcheck',
                 get_string('freemail:maxcheck', 'freemail'),
@@ -52,6 +48,7 @@ $settings->add( new admin_setting_configtext(
                 '',
                 ''));
 
+/*
 $settings->add( new admin_setting_configselect(
                 'freemail_usepassword',
                 get_string('freemail:usepass','freemail'),
@@ -59,6 +56,7 @@ $settings->add( new admin_setting_configselect(
                 0,
                 array('0' => 'No', '1' => 'Yes')
 ));
+*/
 
 
 ?>
