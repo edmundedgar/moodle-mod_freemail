@@ -29,9 +29,11 @@ echo $OUTPUT->header();
 //$PAGE->set_context(context_system::instance());
 //$PAGE->set_pagelayout('standard');
 
-require_once $CFG->dirroot.'/mod/freemail/freemail_imap_message_handler.php'; 
-require_once $CFG->dirroot.'/mod/freemail/freemail_email_processor.php'; 
-require_once $CFG->dirroot.'/mod/freemail/freemail_moodle_importer.php'; 
+$freemail_dir = dirname(__FILE__);
+
+require_once $freemail_dir.'/freemail_imap_message_handler.php'; 
+require_once $freemail_dir.'/freemail_email_processor.php'; 
+require_once $freemail_dir.'/freemail_moodle_importer.php'; 
 
 $noticeTable = new html_table();
 $noticeTable->head = array('SLOODLE Freemail - Postcard Blogger');

@@ -23,8 +23,7 @@ class freemail_email_processor {
 
     static function available_email_processors() {
 
-        global $CFG;
-        $processor_dir = $CFG->dirroot.'/mod/freemail/email_processors';
+        $processor_dir = dirname(__FILE__).'/email_processors';
 
         if (!$dh = opendir($processor_dir)) {
             return false;
