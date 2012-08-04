@@ -31,9 +31,9 @@ echo $OUTPUT->header();
 
 $freemail_dir = dirname(__FILE__);
 
-require_once $freemail_dir.'/freemail_imap_message_handler.php'; 
-require_once $freemail_dir.'/freemail_email_processor.php'; 
-require_once $freemail_dir.'/freemail_moodle_importer.php'; 
+require_once $freemail_dir.'/lib/freemail_imap_message_handler.php'; 
+require_once $freemail_dir.'/lib/freemail_email_processor.php'; 
+require_once $freemail_dir.'/lib/freemail_moodle_importer.php'; 
 
 $noticeTable = new html_table();
 $noticeTable->head = array('SLOODLE Freemail - Postcard Blogger');

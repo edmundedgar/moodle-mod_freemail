@@ -17,15 +17,15 @@ if (isset($argv)) {
 require_once "../../config.php";
 
 // Class for handling an imap message connection, and fetching and parsing emails one by one.
-require_once 'freemail_imap_message_handler.php'; 
+require_once 'lib/freemail_imap_message_handler.php'; 
 
 // The following are base classes, but with static methods to load inherited classes.
 
 // We'll need an email_processor to parse our email - for example if it looks like a Second Life snapshot, we'll want one of those.
-require_once 'freemail_email_processor.php'; 
+require_once 'lib/freemail_email_processor.php'; 
 
 // It will then need to find something to do with the email, like import it into the blog.
-require_once 'freemail_moodle_importer.php';
+require_once 'lib/freemail_moodle_importer.php';
 
 $verbose = in_array("-v", $argv);
 $daemon = in_array("-d", $argv);
